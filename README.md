@@ -1,4 +1,4 @@
-# Airbnb Swift Style Guide
+# Fishbrain Swift Style Guide
 
 ## Goals
 
@@ -379,7 +379,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   ```swift
   // WRONG
-  let rowContent = [
+  let rowContent = [ 
     listingUrgencyDatesRowContent(),
     listingUrgencyBookedRowContent(),
     listingUrgencyBookedShortRowContent()
@@ -1532,6 +1532,35 @@ _You can enable the following settings in Xcode by running [this script](resourc
     didSet {
       print("oh my god, the atmosphere changed")
     }
+  }
+  ```
+
+  </details>
+
+* <a id='protocol-conformance'></a>(<a href='#protocol-conformance'>link</a>) **Protocol conformance should be added in a separate extension.**
+
+  <details>
+  In particular, when adding protocol conformance to a model, prefer adding a separate extension for the protocol methods. This keeps the related methods grouped together with the protocol and can simplify instructions to add a protocol to a class with its associated methods.
+ 
+  ```swift
+  // WRONG
+  class MyViewController: UIViewController, UITableViewDataSource, UIScrollViewDelegate {
+    // all methods
+  }
+
+  // RIGHT
+  class MyViewController: UIViewController {
+    // class stuff here
+  }
+
+  // MARK: - UITableViewDataSource
+  extension MyViewController: UITableViewDataSource {
+    // table view data source methods
+  }
+
+  // MARK: - UIScrollViewDelegate
+  extension MyViewController: UIScrollViewDelegate {
+    // scroll view delegate methods
   }
   ```
 
