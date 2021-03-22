@@ -1,4 +1,4 @@
-# Airbnb Swift Style Guide
+# Fishbrain Swift Style Guide
 
 ## Goals
 
@@ -379,7 +379,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   ```swift
   // WRONG
-  let rowContent = [
+  let rowContent = [ 
     listingUrgencyDatesRowContent(),
     listingUrgencyBookedRowContent(),
     listingUrgencyBookedShortRowContent()
@@ -1443,6 +1443,28 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* <a id='minimal-imports'></a>(<a href='#minimal-imports'>link</a>) **Import only the modules a source file requires.**  For example, don't import `UIKit` when importing `Foundation` will suffice. Likewise, don't import `Foundation` if you must import `UIKit`. [![SwiftLint: unused_import](https://img.shields.io/badge/SwiftLint-unused_import-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#unused_import)
+
+  <details>
+  
+  ```swift
+  // WRONG
+  import UIKit
+  import Foundation
+  var view: UIView
+  var deviceModels: [String]
+
+  // RIGHT
+  import UIKit
+  var view: UIView
+  var deviceModels: [String]
+
+  // RIGHT
+  import Foundation
+  var deviceModels: [String]
+  ```
+  </details>
+
 * <a id='limit-vertical-whitespace'></a>(<a href='#limit-vertical-whitespace'>link</a>) **Limit empty vertical whitespace to one line.** Favor the following formatting guidelines over whitespace of varying heights to divide files into logical groupings. [![SwiftLint: vertical_whitespace](https://img.shields.io/badge/SwiftLint-vertical__whitespace-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#vertical-whitespace)
 
 * <a id='newline-at-eof'></a>(<a href='#newline-at-eof'>link</a>) **Files should end in a newline.** [![SwiftLint: trailing_newline](https://img.shields.io/badge/SwiftLint-trailing__newline-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#trailing-newline)
@@ -1532,6 +1554,34 @@ _You can enable the following settings in Xcode by running [this script](resourc
     didSet {
       print("oh my god, the atmosphere changed")
     }
+  }
+  ```
+
+  </details>
+
+* <a id='protocol-conformance'></a>(<a href='#protocol-conformance'>link</a>) **Protocol conformance should be added in a separate extension.**  Prefer adding a separate extension for the protocol methods. This keeps the related methods grouped together with the protocol and can simplify instructions to add a protocol to a class with its associated methods.
+
+  <details>
+  
+  ```swift
+  // WRONG
+  class MyViewController: UIViewController, UITableViewDataSource, UIScrollViewDelegate {
+    // all methods
+  }
+
+  // RIGHT
+  class MyViewController: UIViewController {
+    // class stuff here
+  }
+
+  // MARK: - UITableViewDataSource
+  extension MyViewController: UITableViewDataSource {
+    // table view data source methods
+  }
+
+  // MARK: - UIScrollViewDelegate
+  extension MyViewController: UIScrollViewDelegate {
+    // scroll view delegate methods
   }
   ```
 
