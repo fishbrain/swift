@@ -13,6 +13,7 @@
 --wraparguments before-first # wrapArguments
 --wrapparameters before-first # wrapArguments
 --wrapconditions after-first # wrapArguments
+--wrapcollections before-first # wrapArguments
 --wrapreturntype if-multiline #wrapArguments
 --closingparen same-line # wrapArguments
 --funcattributes prev-line # wrapAttributes
@@ -24,7 +25,7 @@
 # rules
 --rules wrap, indent, organizeDeclarations, trailingSpace
 --rules sortedImports, duplicateImports
---rules anyObjectProtocol, markTypes, extensionAccessControl, void
+--rules anyObjectProtocol, extensionAccessControl, void
 --rules redundantParens, redundantReturn, redundantSelf, strongifiedSelf
 --rules wrapArguments, wrapMultilineStatementBraces, wrapAttributes
 --rules spaceAroundOperators, consecutiveSpaces, spaceInsideBraces, spaceInsideBrackets, consecutiveBlankLines

@@ -586,6 +586,29 @@ NOTE: Not all the rules are linked here, check [SwiftFormat](https://github.com/
 
   </details>
 
+* <a id='multi-line-array'></a>(<a href='#multi-line-array'>link</a>) **Multi-line arrays should have each bracket on a separate line.** Put the opening and closing brackets on separate lines from any of the elements of the array. Also add a trailing comma on the last element. [![SwiftFormat: wrapArguments](https://img.shields.io/badge/SwiftFormat-wrapArguments-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#wrapArguments)
+
+  <details>
+
+  ```swift
+  // WRONG
+  let rowContent = [listingUrgencyDatesRowContent(),
+                    listingUrgencyBookedRowContent(),
+                    listingUrgencyBookedShortRowContent()]
+
+  let rowContent = [
+    listingUrgencyDatesRowContent(),
+    listingUrgencyBookedRowContent(),
+    listingUrgencyBookedShortRowContent()
+  ]
+
+  // RIGHT
+  let rowContent = [
+    listingUrgencyDatesRowContent(),
+    listingUrgencyBookedRowContent(),
+    listingUrgencyBookedShortRowContent(),
+  ]
+  ```
 
 * <a id='multi-line-conditions'></a>(<a href='#multi-line-conditions'>link</a>) **Multi-line conditional statements should break after the leading keyword.** Indent each individual statement by [4 spaces](https://github.com/airbnb/swift#spaces-over-tabs). [![SwiftFormat: wrapArguments](https://img.shields.io/badge/SwiftFormat-wrapArguments-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#wrapArguments)
 
@@ -1384,32 +1407,6 @@ NOTE: Not all the rules are linked here, check [SwiftFormat](https://github.com/
 * <a id='limit-vertical-whitespace'></a>(<a href='#limit-vertical-whitespace'>link</a>) **Limit empty vertical whitespace to one line.** Favor the following formatting guidelines over whitespace of varying heights to divide files into logical groupings. [![SwiftLint: vertical_whitespace](https://img.shields.io/badge/SwiftLint-vertical__whitespace-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#vertical-whitespace)
 
 * <a id='newline-at-eof'></a>(<a href='#newline-at-eof'>link</a>) **Files should end in a newline.** [![SwiftLint: trailing_newline](https://img.shields.io/badge/SwiftLint-trailing__newline-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#trailing-newline)
-
-* <a id='mark-types-and-extensions'></a>(<a href='#mark-types-and-extensions'>link</a>) **Each type and extension which implements a conformance should be preceded by a `MARK` comment.** [![SwiftFormat: markTypes](https://img.shields.io/badge/SwiftFormat-markTypes-008489.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#markTypes)
-  * Types should be preceded by a `// MARK: - TypeName` comment.
-  * Extensions that add a conformance should be preceded by a `// MARK: - TypeName + ProtocolName` comment.
-  * Extensions that immediately follow the type being extended should omit that type's name and instead use `// MARK: ProtocolName`.
-  * If there is only one type or extension in a file, the `MARK` comment can be omitted.
-  * If the extension in question is empty (e.g. has no declarations in its body), the `MARK` comment can be omitted.
-  * For extensions that do not add new conformances, consider adding a `MARK` with a descriptive comment.
-
-  <details>
-
-  ```swift
-  // MARK: - GalaxyView
-
-  final class GalaxyView: UIView { … }
-
-  // MARK: ContentConfigurableView
-
-  extension GalaxyView: ContentConfigurableView { … }
-
-  // MARK: - Galaxy + SpaceThing, NamedObject
-
-  extension Galaxy: SpaceThing, NamedObject { … }
-  ```
-
-  </details>
 
 * <a id='marks-within-types'></a>(<a href='#marks-within-types'>link</a>) **Use `// MARK:` to separate the contents of type definitions and extensions into the sections listed below, in order.** All type definitions and extensions should be divided up in this consistent way, allowing a reader of your code to easily jump to what they are interested in. [![SwiftFormat: organizeDeclarations](https://img.shields.io/badge/SwiftFormat-organizeDeclarations-008489.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#organizeDeclarations)
   * `// MARK: Lifecycle` for `init` and `deinit` methods.
