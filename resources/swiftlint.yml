@@ -1,15 +1,27 @@
-whitelist_rules:
+disabled_rules: # rule identifiers to exclude from running
+  - function_body_length
+  - leading_whitespace
+  - redundant_string_enum_value
+  - private_unit_test
+  - large_tuple
+  - function_parameter_count
+  - cyclomatic_complexity
+  - identifier_name
+  - shorthand_operator
+  - trailing_comma
+  - file_length
+  - nesting
+  - force_cast
+  - no_fallthrough_only
+  - implicit_getter
+  - opening_brace
+
+opt_in_rules:
   - closure_spacing
   - colon
   - empty_enum_arguments
-  - fatal_error_message
-  - force_cast
-  - force_try
-  - force_unwrapping
-  - implicitly_unwrapped_optional
   - legacy_cggeometry_functions
   - legacy_constant
-  - legacy_constructor
   - legacy_nsgeometry_functions
   - operator_usage_whitespace
   - redundant_string_enum_value
@@ -22,15 +34,48 @@ whitelist_rules:
   - vertical_whitespace
   - void_return
   - custom_rules
+  - force_try
+  - legacy_constructor
+  - mark
 
-excluded:
-  - Carthage
+included: # paths to include during linting. `--path` is ignored if present.
+  - Source
+
+excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods
+
+analyzer_rules:
+  - unused_import
 
 colon:
   apply_to_dictionaries: false
 
-indentation: 2
+indentation: 4
+
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+force_try:
+  severity: warning # explicitly
+# rules that have both warning and error levels, can set just the warning level
+# implicitly
+line_length:
+  warning: 140
+  error: 180
+# they can set both implicitly with an array
+type_body_length:
+  - 300 # warning
+  - 400 # error
+# naming rules can set warnings/errors for min_length and max_length
+# additionally they can set excluded names
+type_name:
+  min_length: 1 # only warning
+  max_length: # warning and error
+    warning: 50
+    error: 60
+  excluded:
+    - iPhone
+    - iOS
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
 
 custom_rules:
   no_objcMembers:
