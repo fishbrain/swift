@@ -32,6 +32,7 @@ Note that brevity is not a primary goal. Code should be made more concise only i
 1. [Patterns](#patterns)
 1. [File Organization](#file-organization)
 1. [Objective-C Interoperability](#objective-c-interoperability)
+1. [Dependencies](#dependencies)
 1. [Contributors](#contributors)
 1. [Amendments](#amendments)
 
@@ -1314,6 +1315,130 @@ NOTE: Not all the rules are linked here, check [SwiftFormat](https://github.com/
 
   </details>
 
+* <a id='avoid-casting-protocols'></a>(<a href='#avoid-casting-protocols'>link</a>) **Avoid casting protocols to concrete types.**
+
+  <details>
+
+  #### Why?
+  Downcasting a `protocol` to a concrete type (eg `class`) can introduce potential errors when the type cannot be casted.  If you require methods on the concrete type not present in the `protocol`, amend the `protocol` to add them, or refactor the code to use the concrete type instead.  There will be times where downcasting is unavoidable (due to third party libraries, or Obj-c code), but we would want to avoid it if we *can*.
+
+  ```swift
+  // WRONG
+  protocol UserProvider {
+    // ...
+  }
+  final class UserManager: UserProvider {
+    //
+  }
+  
+  if let manager = provider as? UserManager {
+     // downcasted manager
+  }
+
+  // RIGHT - One of the following alternatives
+  // Add the needed method to the protocol
+  protocol UserProvider {
+     func doThing()
+  }
+  final class UserManager: UserProvider { }
+  
+  let provider: UserProvider
+  
+  provider.doThing()
+  
+  // OR - Use the concrete type instead.
+  protocol UserProvider {
+  }
+  final class UserManager: UserProvider { 
+     func doThing()
+  }
+  
+  let manager: UserManager
+  
+  manager.doThing()
+
+  // OR - Add an additional protocol
+  protocol UserProvider {
+  }
+  protocol UserManagerProtocol: UserProvider {
+     func doThing()
+  }
+  final class UserManager: UserManagerProtocol { }
+  
+  let manager: UserManagerProtocol
+  
+  manager.doThing()
+  ```
+
+  </details>
+
+* <a id='fail-loudly'></a>(<a href='#fail-loudly'>link</a>) **Prefer failing loudly over silently.**
+
+  <details>
+
+  #### Why?
+  Failing loudly allows us to catch errors in development and testing.  Our automated tools (Crashlytics etc.) are well suited to detecting loud errors like crashes, but are poor at detecting silent errors like missing or blank UI, freezes, early returns, etc. 
+  
+  For further granularity, prefer `assert` for catching errors which might be easily uncovered in debug mode, and are recoverable.  Use `precondition`, `preconditionFailure` or `fatalError` for when something should absolutely never occur or the error is unrecoverable. 
+
+  ```swift
+  // WRONG
+  guard let viewModel = model else {
+     return 
+  }
+  view.loadWith(viewModel)
+  
+  // RIGHT
+  guard let viewModel = model else {
+    fatalError("The viewModel must be present to render this view!")
+  }
+  view.loadWith(viewModel)
+  ```
+
+  </details>
+
+* <a id='fail-compile-time'></a>(<a href='#fail-compile-time'>link</a>) **Prefer failing at compile time over at runtime.**
+
+  <details>
+
+  #### Why?
+  Failing at compilation time allows us to catch errors in development.  Failing at runtime may introduce unexpected crashes and bugs.  Make code as "compile-safe" as possible so that potential failure cases are uncovered during compilation. 
+
+  ```swift
+  // WRONG
+  struct Thing: Decodable {
+    let type: String
+  }
+  
+  switch thing.type {
+    case "post":
+      //
+    case "catch":
+      // 
+    default: 
+      // this should never occur
+  }
+  
+  // RIGHT
+  struct Thing: Decodable {
+    let type: ThingType
+  }
+  
+  enum ThingType {
+    case catch
+    case post
+  }
+  
+  switch thing.type {
+    case .post:
+      //
+    case .catch:
+      // 
+  }
+  ```
+
+  </details>
+
 **[⬆ back to top](#table-of-contents)**
 
 ## File Organization
@@ -1530,6 +1655,49 @@ NOTE: Not all the rules are linked here, check [SwiftFormat](https://github.com/
   </details>
 
 **[⬆ back to top](#table-of-contents)**
+
+## Dependencies
+
+* <a id='consider-dependencies'></a>(<a href='#consider-dependencies'>link</a>) **Strongly consider alternatives before adding dependencies.**
+
+  <details>
+  
+  #### Why?
+  Dependencies introduce overhead on the development cycle, including increased compilation time, time spent updating dependencies, more difficulty in debugging, and licensing or security issues.  
+  
+  Before adding a new dependency to the project, consider:
+
+  - Is this a non-trivial problem that I am solving? Trivial programming problems shouldn't be solved by adding dependencies (eg <a href=https://arstechnica.com/information-technology/2016/03/rage-quit-coder-unpublished-17-lines-of-javascript-and-broke-the-internet/>left-pad</a> )
+  - Can I just include the code I need?  Copying small amounts code or files from open-source libraries can be a solution if you only need part of a larger library.  This is assuming the copied code is relatively stable and feature-complete.
+  - Is the dependency well-maintained?  Prefer adding dependencies with active development and community support.  If a dependency has lots of unsolved github issues from years ago, or many abandoned PRs, avoid it. 
+  - Are there licensing or security consideration? Pay extra attention if you plan on modifying the library (eg GPL licenses you cannot modify without maintaining the open-source nature of the modified code)
+
+  </details>
+  
+* <a id='decouple-code'></a>(<a href='#decouple-code'>link</a>) **Avoid using dependencies directly.**  Write wrappers around dependencies instead. 
+
+  <details>
+  
+   #### Why?
+  Writing wrapper `protocols` can help isolate dependencies so that they may be more easily replaced by internal code or other dependencies.  This also reduces the amount of `import Framework` we are doing. 
+
+  ```swift
+  
+  protocol RemoteConfigProvider {
+    func remoteConfigValue(forKey: String)
+  }
+  extension FirebaseRemoteConfiguration: RemoteConfigProvider {
+  
+  }
+  
+  // use `RemoteConfigProvider` elsewhere
+  
+  ```
+
+  </details>
+
+**[⬆ back to top](#table-of-contents)**
+
 
 ## Contributors
 
