@@ -1320,7 +1320,7 @@ NOTE: Not all the rules are linked here, check [SwiftFormat](https://github.com/
   <details>
 
   #### Why?
-  Downcasting a `protocol` to a concrete type (eg `class`) can introduce potential errors when the type cannot be casted.  If you require methods on the concrete type not present in the `protocol`, amend the `protocol` to add them, or refactor the code to use the concrete type instead.
+  Downcasting a `protocol` to a concrete type (eg `class`) can introduce potential errors when the type cannot be casted.  If you require methods on the concrete type not present in the `protocol`, amend the `protocol` to add them, or refactor the code to use the concrete type instead.  There will be times where downcasting is unavoidable (due to third party libraries, or Obj-c code), but we would want to avoid it if we *can*.
 
   ```swift
   // WRONG
@@ -1334,8 +1334,40 @@ NOTE: Not all the rules are linked here, check [SwiftFormat](https://github.com/
   if let manager = provider as? UserManager {
      // downcasted manager
   }
-  // otherwise what happens? 
 
+  // RIGHT - One of the following alternatives
+  // Add the needed method to the protocol
+  protocol UserProvider {
+     func doThing()
+  }
+  final class UserManager: UserProvider { }
+  
+  let provider: UserProvider
+  
+  provider.doThing()
+  
+  // OR - Use the concrete type instead.
+  protocol UserProvider {
+  }
+  final class UserManager: UserProvider { 
+     func doThing()
+  }
+  
+  let manager: UserManager
+  
+  manager.doThing()
+
+  // OR - Add an additional protocol
+  protocol UserProvider {
+  }
+  protocol UserManagerProtocol: UserProvider {
+     func doThing()
+  }
+  final class UserManager: UserManagerProtocol { }
+  
+  let manager: UserManagerProtocol
+  
+  manager.doThing()
   ```
 
   </details>
